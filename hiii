@@ -18,7 +18,16 @@ def main():
         running = True
         while running:
                 screen.fill((0,0,0)) #making the screen
-                screen.blit(image_nucleus, (800,800))
+                screen.blit(image_nucleus, (-10,-20))
+
+                for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                                running = False 
+
+                pygame.display.flip()
+
+        pygame.quit()
+        sys.exit()
         
 if __name__ == "__main__":
         main()

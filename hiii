@@ -9,6 +9,7 @@ screen = pygame.display.set_mode((800,800))
 pygame.display.set_caption("Neon Minesweeper")
 
 def main():
+        
         image_nucleus = pygame.image.load("nucleus.png")
         image_ring1 = pygame.image.load("inner shell.png")
         #load our image
@@ -20,6 +21,7 @@ def main():
         while running:
                 screen.fill((0,0,0)) #making the screen
                 screen.blit(image_nucleus, (-10,-20))
+                screen.blit(image_ring1,(-10,-20))
                 
 
                 for event in pygame.event.get():

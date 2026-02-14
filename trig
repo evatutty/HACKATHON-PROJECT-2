@@ -1,0 +1,19 @@
+import math
+
+def outer(angle):
+    r=150
+    x=400 +(r*math.cos(angle))
+    y=400 - (r*math.sin(angle))
+    return x,y
+
+def inner(angle):
+    r=75
+    x=400 +(r*math.cos(angle))
+    y=400 - (r*math.sin(angle))
+    return x,y
+
+print(outer(11*math.pi/6))
+print(inner(11*math.pi/6))
+
+
+

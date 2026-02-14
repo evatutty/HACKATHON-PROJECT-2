@@ -5,57 +5,82 @@ import math
 pygame.init()
 
 
-screen = pygame.display.set_mode((800,800))
-WHITE = (255, 255, 255)
-pygame.display.set_caption("Neon Minesweeper")
 
-def main():
-        
-        image_nucleus = pygame.image.load("nucleus.png")
-        image_ring1 = pygame.image.load("inner shell.png")
-        image_ring2 = pygame.image.load("outer shell.png")
-        #load our image
-        image_nucleus = pygame.transform.scale(image_nucleus, (800,800))
-        image_ring1 = pygame.transform.scale(image_ring1, (800,800))
-        image_ring2 = pygame.transform.scale(image_ring2, (800,800))
-
-
-        running = True
-        while running:
-                screen.fill(WHITE)
-                
-
-                screen.blit(image_nucleus, (-10,-20))
-                screen.blit(image_ring1,(-10,-20))
-                screen.blit(image_ring2,(-10,-20))
                                 
                
 
 screen = pygame.display.set_mode((800,800))
 WHITE = (255, 255, 255)
+BLACK = (0,0,0)
+RED = (255,0,0)
+GREEN = (0,255,0)
+CENTER = (400,400)
+
 pygame.display.set_caption("Neon Minesweeper")
+
+def outerX(angle,r):
+    x=400 +(r*math.cos(angle))
+    return x
+def outerY(angle,r):
+    y=400 - (r*math.sin(angle))
+    return y
+
+def innerX(angle,r):
+    x=400 +(r*math.cos(angle))
+    return x
+def innerY(angle,r):
+    y=400 - (r*math.sin(angle))
+    return y
+
+
 
 def main():
         
         image_nucleus = pygame.image.load("nucleus.png")
-        image_ring1 = pygame.image.load("inner shell.png")
-        image_ring2 = pygame.image.load("outer shell.png")
         #load our image
         image_nucleus = pygame.transform.scale(image_nucleus, (800,800))
-        image_ring1 = pygame.transform.scale(image_ring1, (800,800))
-        image_ring2 = pygame.transform.scale(image_ring2, (800,800))
+
+        
 
 
         running = True
         while running:
-                screen.fill(WHITE)
+               screen.fill(WHITE)
+               screen.blit(image_nucleus, (-27.5,-20)) 
+               #circles
+               pygame.draw.circle(screen, RED, CENTER, 75, 3)
+               pygame.draw.circle(screen, RED, CENTER, 112.5, 3)
+               pygame.draw.circle(screen, GREEN, CENTER, 150, 3)
+               pygame.draw.circle(screen, GREEN, CENTER, 187.5, 3)
+               pygame.draw.circle(screen, BLACK, CENTER, 225, 3)
+               pygame.draw.circle(screen, BLACK, CENTER, 300, 3)
                 
+                #orbital 1 lines
+               pygame.draw.line(screen, RED, (400,325), (400,250), 3)
+               pygame.draw.line(screen, RED, (529.9038105676658, 325.0), (464.9519052838329, 362.5), 3)
+               pygame.draw.line(screen, RED, (475.0, 270.0961894323342), (437.5, 335.0480947161671), 3)
+               pygame.draw.line(screen, RED, (400,475), (400,550), 3)
+               pygame.draw.line(screen, RED, (325.0, 270.0961894323342), (362.5, 335.0480947161671), 3)
+               pygame.draw.line(screen, RED, (270.0961894323342, 325.0), (335.0480947161671, 362.5), 3)
+               pygame.draw.line(screen, RED, (475,400), (550,400), 3)
+               pygame.draw.line(screen, RED, (270.0961894323342, 475.0), (335.0480947161671, 437.5), 3)
+               pygame.draw.line(screen, RED, (324.99999999999994, 529.9038105676657), (362.49999999999994, 464.95190528383284), 3)
+               pygame.draw.line(screen, RED, (475.0, 529.9038105676658), (437.5, 464.9519052838329), 3)
+               pygame.draw.line(screen, RED, (529.9038105676657, 475.00000000000006), (464.95190528383284, 437.50000000000006), 3)
+               pygame.draw.line(screen, RED, (325,400), (250,400), 3)
 
-                screen.blit(image_nucleus, (-10,-20))
-                screen.blit(image_ring1,(-10,-20))
-                screen.blit(image_ring2,(-10,-20))
+               #orbital 2 lines
+               #pygame.draw.line(screen, GREEN, (outerX(0,75),outerY(0,75)), (innerX(0,75), innerY(0,75)), 3)
 
+               angle = 0
+               Iradius = 150
+               Oradius=225
+               for x in range(12):
+                       rad=math.radians(angle)
+                       pygame.draw.line(screen, GREEN, (outerX(rad,Oradius),outerY(rad,Oradius)), (innerX(rad, Iradius), innerY(rad,Iradius)), 3)
+                       angle += 30
 
+<<<<<<< HEAD
                 box1_1 = pygame.Rect(406,231,40,30)
                 box1_2 = pygame.Rect(446,249,45,25)
                 box1_3 = pygame.Rect(485,274,40,50)
@@ -178,16 +203,17 @@ def main():
 
 
                 for event in pygame.event.get():
+=======
+               pygame.display.flip()
+               
+               for event in pygame.event.get():
+>>>>>>> f3cd858c3491fb99874f7abb06e9aeeb80274a40
                         if event.type == pygame.QUIT:
                                 running = False 
-
                         if event.type == pygame.MOUSEBUTTONDOWN:
                                 mouse_pos = pygame.mouse.get_pos()
                                 print(mouse_pos)
-
-                        
-
-                pygame.display.flip()
+        
 
         pygame.quit()
         sys.exit()

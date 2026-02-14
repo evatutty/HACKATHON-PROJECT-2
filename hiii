@@ -1,4 +1,9 @@
-import numpy
+
+import numpy as np
+import pygame
+
+
+>>>>>>> 879c80b6f1c1713303da38e1f2a88bfbdb466be8
 print ("hi")
 print("no")
 #gyutukyliy
@@ -12,3 +17,4 @@ print("no")
 #omgomgomg
 #eva tutty rocks
 #hannah rocks
+#hakkkk

@@ -1,0 +1,163 @@
+import numpy as np
+import sys
+import pygame
+pygame.init()
+
+
+
+                                
+               
+
+screen = pygame.display.set_mode((800,800))
+WHITE = (255, 255, 255)
+pygame.display.set_caption("Neon Minesweeper")
+
+def main():
+        
+        image_nucleus = pygame.image.load("nucleus.png")
+        image_ring1 = pygame.image.load("inner shell.png")
+        image_ring2 = pygame.image.load("outer shell.png")
+        #load our image
+        image_nucleus = pygame.transform.scale(image_nucleus, (800,800))
+        image_ring1 = pygame.transform.scale(image_ring1, (800,800))
+        image_ring2 = pygame.transform.scale(image_ring2, (800,800))
+
+
+        running = True
+        while running:
+                screen.fill(WHITE)
+                
+
+                screen.blit(image_nucleus, (-10,-20))
+                screen.blit(image_ring1,(-10,-20))
+                screen.blit(image_ring2,(-10,-20))
+
+
+                box1_1 = pygame.Rect(406,231,40,30)
+                box1_2 = pygame.Rect(446,249,45,25)
+                box1_3 = pygame.Rect(485,274,40,50)
+                box1_4 = pygame.Rect(499,324,40,50)
+                box1_5 = pygame.Rect(511,375,30,50)
+                box1_6 = pygame.Rect(497,429,40,50)
+                box1_7 = pygame.Rect(483,478,30,45)
+                box1_8 = pygame.Rect(450,523,40,30)
+                box1_9 = pygame.Rect(413,533,40,30)
+                box1_10 = pygame.Rect(377,525,35,35)
+                box1_11 = pygame.Rect(340,499,35,50)
+                box1_12 = pygame.Rect(308,456,35,50)
+                box1_13 = pygame.Rect(302,391,32,60)
+                box1_14 = pygame.Rect(306,337,30,50)
+                box1_15 = pygame.Rect(312,293,30,40)
+                box1_16 = pygame.Rect(327,260,43,35)
+                box1_17= pygame.Rect(373,236,35,40)
+
+                
+
+                pygame.draw.rect(screen,(255,0,0), box1_1,2)
+                pygame.draw.rect(screen,(255,0,0), box1_2,2)
+                pygame.draw.rect(screen,(255,0,0), box1_3,2)
+                pygame.draw.rect(screen,(255,0,0), box1_4,2)
+                pygame.draw.rect(screen,(255,0,0), box1_5,2)
+                pygame.draw.rect(screen,(255,0,0), box1_6,2)
+                pygame.draw.rect(screen,(255,0,0), box1_7,2)
+                pygame.draw.rect(screen,(255,0,0), box1_8,2)
+                pygame.draw.rect(screen,(255,0,0), box1_9,2)
+                pygame.draw.rect(screen,(255,0,0), box1_10,2)
+                pygame.draw.rect(screen,(255,0,0), box1_11,2)
+                pygame.draw.rect(screen,(255,0,0), box1_12,2)
+                pygame.draw.rect(screen,(255,0,0), box1_13,2)
+                pygame.draw.rect(screen,(255,0,0), box1_14,2)
+                pygame.draw.rect(screen,(255,0,0), box1_15,2)
+                pygame.draw.rect(screen,(255,0,0), box1_16,2)
+                pygame.draw.rect(screen,(255,0,0), box1_17,2)
+
+
+                box2_1 = pygame.Rect(420,130,35,35)
+                pygame.draw.rect(screen,(255,0,0), box2_1,2)
+                box2_2 = pygame.Rect(457,142,32,36)
+                pygame.draw.rect(screen,(255,0,0), box2_2,2)
+                box2_3 = pygame.Rect(490,159,35,40)
+                pygame.draw.rect(screen,(255,0,0), box2_3,2)
+                box2_4 = pygame.Rect(526,189,33,44)
+                pygame.draw.rect(screen,(255,0,0), box2_4,2)
+                box2_5 = pygame.Rect(549,236,35,39)
+                pygame.draw.rect(screen,(255,0,0), box2_5,2)
+                box2_6 = pygame.Rect(566,285,35,40)
+                pygame.draw.rect(screen,(255,0,0), box2_6,2)
+                box2_7 = pygame.Rect(578,330,30,50)
+                pygame.draw.rect(screen,(255,0,0), box2_7,2)
+                box2_8 = pygame.Rect(583,387,30,50)
+                pygame.draw.rect(screen,(255,0,0), box2_8,2)
+                box2_9 = pygame.Rect(573,440,35,49)
+                pygame.draw.rect(screen,(255,0,0), box2_9,2)
+                box2_10 = pygame.Rect(552,490,45,40)
+                pygame.draw.rect(screen,(255,0,0), box2_10,2)
+                box2_11 = pygame.Rect(536,531,35,39)
+                pygame.draw.rect(screen,(255,0,0), box2_11,2)
+                box2_13 = pygame.Rect(510,572,40,35)
+                pygame.draw.rect(screen,(255,0,0), box2_13,2)
+                box2_14 = pygame.Rect(488,607,35,32)
+                pygame.draw.rect(screen,(255,0,0), box2_14,2)
+                box2_15 = pygame.Rect(459,624,30,35)
+                pygame.draw.rect(screen,(255,0,0), box2_15,2)
+                box2_16 = pygame.Rect(420,634,35,35)
+                pygame.draw.rect(screen,(255,0,0), box2_16,2)
+                box2_17 = pygame.Rect(382,632,35,35)
+                pygame.draw.rect(screen,(255,0,0), box2_17,2)
+                box2_18 = pygame.Rect(346,616,35,37)
+                pygame.draw.rect(screen,(255,0,0), box2_18,2)
+                box2_19 = pygame.Rect(312,595,33,35)
+                pygame.draw.rect(screen,(255,0,0), box2_19,2)
+                box2_20 = pygame.Rect(275,565,35,35)
+                pygame.draw.rect(screen,(255,0,0), box2_20,2)
+                box2_21 = pygame.Rect(252,520,38,40)
+                pygame.draw.rect(screen,(255,0,0), box2_21,2)
+                box2_22 = pygame.Rect(240,466,33,45)
+                pygame.draw.rect(screen,(255,0,0), box2_22,2)
+                box2_23 = pygame.Rect(234,414,25,47)
+                pygame.draw.rect(screen,(255,0,0), box2_23,2)
+                box2_24 = pygame.Rect(232,359,27,50)
+                pygame.draw.rect(screen,(255,0,0), box2_24,2)
+                box2_25 = pygame.Rect(235,300,33,55)
+                pygame.draw.rect(screen,(255,0,0), box2_25,2)
+                box2_26 = pygame.Rect(245,244,38,53)
+                pygame.draw.rect(screen,(255,0,0), box2_26,2)
+                box2_27 = pygame.Rect(273,201,37,40)
+                pygame.draw.rect(screen,(255,0,0), box2_27,2)
+                box2_28 = pygame.Rect(308,168,35,35)
+                pygame.draw.rect(screen,(255,0,0), box2_28,2)
+                box2_29 = pygame.Rect(344,150,35,35)
+                pygame.draw.rect(screen,(255,0,0), box2_29,2)
+                box2_30 = pygame.Rect(380,136,35,35)
+                pygame.draw.rect(screen,(255,0,0), box2_30,2)
+        
+                
+
+                for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                                running = False 
+
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                                mouse_pos = pygame.mouse.get_pos()
+                                print(mouse_pos)
+
+                        
+
+                pygame.display.flip()
+
+        pygame.quit()
+        sys.exit()
+        
+if __name__ == "__main__":
+        main()
+
+
+
+
+#HELLLLLLLOOOOO
+#hi gyysssssssss
+#hello world haha
+#omgomgomg
+#eva tutty rocks
+#hannah rocks
+#hakkkk

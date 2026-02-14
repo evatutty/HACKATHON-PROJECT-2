@@ -54,8 +54,7 @@ def main():
                 screen.blit(image_nucleus, (-10,-20))
                 screen.blit(image_ring1,(-10,-20))
                 screen.blit(image_ring2,(-10,-20))
-                box1_1 = pygame.Rect(406,231,35,30)
-                pygame.draw.rect(screen,(255,0,0), box1_1,2)
+
 
                 box1_1 = pygame.Rect(406,231,40,30)
                 box1_2 = pygame.Rect(446,249,45,25)

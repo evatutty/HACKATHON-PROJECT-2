@@ -6,6 +6,9 @@ pygame.init()
 
 
 screen = pygame.display.set_mode((800,800))
+SKY_BLUE = (135, 206, 235)
+screen.fill(SKY_BLUE)
+pygame.display.flip()
 pygame.display.set_caption("Neon Minesweeper")
 
 def main():

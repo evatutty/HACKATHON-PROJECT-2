@@ -21,10 +21,11 @@ def main():
         running = True
         while running:
                 screen.fill(WHITE)
-                pygame.display.flip()
-                screen.fill((0,0,0)) #making the screen
+                
+
                 screen.blit(image_nucleus, (-10,-20))
                 screen.blit(image_ring1,(-10,-20))
+                pygame.display.flip()
                 
 
                 for event in pygame.event.get():

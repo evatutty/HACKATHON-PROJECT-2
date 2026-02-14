@@ -1,7 +1,7 @@
-
 import numpy as np
 import sys
 import pygame
+import math
 pygame.init()
 
 
@@ -155,6 +155,27 @@ def main():
                 pygame.draw.rect(screen,(255,0,0), box2_30,2)
                 pygame.display.flip()
                 
+                Z_1s = 8.3
+                Z_2s = 4.8
+                Z_2p = 4.8
+                a0 = 1
+
+                #DEFINE TILE COORDINATES, DEFINE NUCLEUS COORDINATE
+                nucleus_x = 
+                nucleus_y =
+                rect_x = 
+                rect_y =
+                rect_width =
+                rect_height =
+                center_x = rect_x + rect_width / 2
+                center_y = rect_y + rect_height / 2
+                dx = center_x - nucleus_x
+                dy = center_y - nucleus_y
+                r = np.sqrt(dx**2+dy**2)
+                
+                def P_1s(r,Z_1s):
+                        return r**2 * math.e**(-2*Z_1s/a0)
+
 
                 for event in pygame.event.get():
                         if event.type == pygame.QUIT:

@@ -28,8 +28,8 @@ def main():
                 screen.blit(image_nucleus, (-10,-20))
                 screen.blit(image_ring1,(-10,-20))
                 screen.blit(image_ring2,(-10,-20))
-                box1 = pygame.Rect(406,231,40,30)
-                pygame.draw.rect(screen,(255,0,0), box1,2)
+                box1_1 = pygame.Rect(406,231,40,30)
+                pygame.draw.rect(screen,(255,0,0), box1_1,2)
                 pygame.display.flip()
                 
 

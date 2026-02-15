@@ -14,7 +14,7 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 CYAN = (0, 255, 255)
 CENTER = (400, 400)
-pygame.display.set_caption("Neon Minesweeper")
+pygame.display.set_caption("Fluorine Minesweeper")
 
 # Trig functions for grid
 def outerX(angle, r):
@@ -65,7 +65,7 @@ def main():
     image_nucleus = pygame.transform.scale(image_nucleus, (800,800))
 
     # Define radii and slices
-    radii = [0, 75, 112.5, 150, 187.5, 225, 300]
+    radii = [0, 75, 112.5, 150, 187.5, 225]
     slices = 12
     filled = [[False for _ in range(slices)] for _ in range(len(radii)-1)]
 
@@ -80,8 +80,6 @@ def main():
                 p = P_1s(r_tile)
             elif ring_index == 2:
                 p = P_2s(r_tile)
-            else:
-                p = P_2p(r_tile)
             tile_probs.append(((ring_index, slice_index), p))
 
     # Normalize
@@ -105,8 +103,7 @@ def main():
         pygame.draw.circle(screen, RED, CENTER, 150, 3)
         pygame.draw.circle(screen, GREEN, CENTER, 187.5, 3)
         pygame.draw.circle(screen, GREEN, CENTER, 225, 3)
-        pygame.draw.circle(screen, BLACK, CENTER, 300, 3)
-
+    
         # Draw grid lines (orbital 1)
         red_lines = [
             ((400,325),(400,250)), ((529.9,325),(464.95,362.5)), ((475,270.096),(437.5,335.048)),

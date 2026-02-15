@@ -5,95 +5,155 @@ import pygame
 import math
 pygame.init()
 
-
-
-                                
-               
-
+#screen setup
 screen = pygame.display.set_mode((800,800))
 WHITE = (255, 255, 255)
 BLACK = (0,0,0)
 RED = (255,0,0)
 GREEN = (0,255,0)
+CYAN = (0, 255, 255)
 CENTER = (400,400)
-
 pygame.display.set_caption("Neon Minesweeper")
 
+#position trig functions
 def outerX(angle,r):
-    x=400 +(r*math.cos(angle))
+    x=CENTER[0] +(r*math.cos(angle))
     return x
 def outerY(angle,r):
-    y=400 - (r*math.sin(angle))
+    y=CENTER[1] - (r*math.sin(angle))
     return y
 
 def innerX(angle,r):
-    x=400 +(r*math.cos(angle))
+    x=CENTER[0] +(r*math.cos(angle))
     return x
 def innerY(angle,r):
-    y=400 - (r*math.sin(angle))
+    y=CENTER[1] - (r*math.sin(angle))
     return y
 
+#index of the ring the radius r falls into"
+def get_ring(r, radii):
+    for i in range(len(radii) - 1):
+        if radii[i] < r <= radii[i + 1]:
+            return i
+    return None
 
+#inder of angle slice
+def get_slice(angle, slices):
+    slice_width = 360 / slices
+    return int(angle // slice_width)
+                                
+ #how to fill in slce              
+def draw_filled_slice(screen, center, inner_radius, outer_radius, start_angle_deg, end_angle_deg, color, num_points=30):
+    start_rad = math.radians(start_angle_deg)
+    end_rad = math.radians(end_angle_deg)
+
+    outer_points = []
+    for i in range(num_points + 1):
+        angle = start_rad + i * (end_rad - start_rad) / num_points
+        x = center[0] + outer_radius * math.cos(angle)
+        y = center[1] - outer_radius * math.sin(angle)
+        outer_points.append((x, y))
+
+    inner_points = []
+    for i in range(num_points + 1):
+        angle = end_rad - i * (end_rad - start_rad) / num_points
+        x = center[0] + inner_radius * math.cos(angle)
+        y = center[1] - inner_radius * math.sin(angle)
+        inner_points.append((x, y))
+
+    points = outer_points + inner_points
+    pygame.draw.polygon(screen, color, points)
+
+
+
+
+ORBITAL = ""
 
 def main():
-        
         image_nucleus = pygame.image.load("nucleus.png")
         #load our image
         image_nucleus = pygame.transform.scale(image_nucleus, (800,800))
 
         
 
+        radii = [0, 75, 112.5, 150, 187.5, 225, 300]
+        slices = 12
+        #which slice at which anlge is filled (false=not filled)
+        filled = [[False for _ in range(slices)] for _ in range(len(radii)-1)]
 
         running = True
         while running:
-               screen.fill(WHITE)
-               screen.blit(image_nucleus, (-27.5,-20)) 
-               #circles
-               pygame.draw.circle(screen, RED, CENTER, 75, 3)
-               pygame.draw.circle(screen, RED, CENTER, 112.5, 3)
-               pygame.draw.circle(screen, GREEN, CENTER, 150, 3)
-               pygame.draw.circle(screen, GREEN, CENTER, 187.5, 3)
-               pygame.draw.circle(screen, BLACK, CENTER, 225, 3)
-               pygame.draw.circle(screen, BLACK, CENTER, 300, 3)
+              screen.fill(WHITE)
+              screen.blit(image_nucleus, (-27.5,-20)) 
+              #circles
+              pygame.draw.circle(screen, RED, CENTER, 75, 3)
+              pygame.draw.circle(screen, RED, CENTER, 112.5, 3)
+              pygame.draw.circle(screen, RED, CENTER, 150, 3)
+              pygame.draw.circle(screen, GREEN, CENTER, 187.5, 3)
+              pygame.draw.circle(screen, GREEN, CENTER, 225, 3)
+              pygame.draw.circle(screen, BLACK, CENTER, 300, 3)
+              
+              #orbital 1 lines
+              pygame.draw.line(screen, RED, (400,325), (400,250), 3)
+              pygame.draw.line(screen, RED, (529.9038105676658, 325.0), (464.9519052838329, 362.5), 3)
+              pygame.draw.line(screen, RED, (475.0, 270.0961894323342), (437.5, 335.0480947161671), 3)
+              pygame.draw.line(screen, RED, (400,475), (400,550), 3)
+              pygame.draw.line(screen, RED, (325.0, 270.0961894323342), (362.5, 335.0480947161671), 3)
+              pygame.draw.line(screen, RED, (270.0961894323342, 325.0), (335.0480947161671, 362.5), 3)
+              pygame.draw.line(screen, RED, (475,400), (550,400), 3)
+              pygame.draw.line(screen, RED, (270.0961894323342, 475.0), (335.0480947161671, 437.5), 3)
+              pygame.draw.line(screen, RED, (324.99999999999994, 529.9038105676657), (362.49999999999994, 464.95190528383284), 3)
+              pygame.draw.line(screen, RED, (475.0, 529.9038105676658), (437.5, 464.9519052838329), 3)
+              pygame.draw.line(screen, RED, (529.9038105676657, 475.00000000000006), (464.95190528383284, 437.50000000000006), 3)
+              pygame.draw.line(screen, RED, (325,400), (250,400), 3)
+              
+              #orbital 2 lines
+              angle = 0
+              Iradius = 150
+              Oradius=225
+              for x in range(12):
+                rad=math.radians(angle)
+                pygame.draw.line(screen, GREEN, (outerX(rad,Oradius),outerY(rad,Oradius)), (innerX(rad, Iradius), innerY(rad,Iradius)), 3)
+                angle += 30
                 
-                #orbital 1 lines
-               pygame.draw.line(screen, RED, (400,325), (400,250), 3)
-               pygame.draw.line(screen, RED, (529.9038105676658, 325.0), (464.9519052838329, 362.5), 3)
-               pygame.draw.line(screen, RED, (475.0, 270.0961894323342), (437.5, 335.0480947161671), 3)
-               pygame.draw.line(screen, RED, (400,475), (400,550), 3)
-               pygame.draw.line(screen, RED, (325.0, 270.0961894323342), (362.5, 335.0480947161671), 3)
-               pygame.draw.line(screen, RED, (270.0961894323342, 325.0), (335.0480947161671, 362.5), 3)
-               pygame.draw.line(screen, RED, (475,400), (550,400), 3)
-               pygame.draw.line(screen, RED, (270.0961894323342, 475.0), (335.0480947161671, 437.5), 3)
-               pygame.draw.line(screen, RED, (324.99999999999994, 529.9038105676657), (362.49999999999994, 464.95190528383284), 3)
-               pygame.draw.line(screen, RED, (475.0, 529.9038105676658), (437.5, 464.9519052838329), 3)
-               pygame.draw.line(screen, RED, (529.9038105676657, 475.00000000000006), (464.95190528383284, 437.50000000000006), 3)
-               pygame.draw.line(screen, RED, (325,400), (250,400), 3)
-
-               #orbital 2 lines
-               #pygame.draw.line(screen, GREEN, (outerX(0,75),outerY(0,75)), (innerX(0,75), innerY(0,75)), 3)
-
-               angle = 0
-               Iradius = 150
-               Oradius=225
-               for x in range(12):
-                       rad=math.radians(angle)
-                       pygame.draw.line(screen, GREEN, (outerX(rad,Oradius),outerY(rad,Oradius)), (innerX(rad, Iradius), innerY(rad,Iradius)), 3)
-                       angle += 30
-
-                        return r**2 * math.e**(-2*Z_1s/a0)
-
-
-                for event in pygame.event.get():
-=======
-               pygame.display.flip()
-               
-               for event in pygame.event.get():
+              # Draw filled regions
+              slice_width = 360 / slices
+              for ring_i in range(len(radii) - 1):
+                     for slice_i in range(slices):
+                           if filled[ring_i][slice_i]:
+                                start_angle = slice_i * slice_width
+                                end_angle = start_angle + slice_width
+                                inner_r = radii[ring_i]
+                                outer_r = radii[ring_i + 1]
+                                draw_filled_slice(screen, CENTER, inner_r, outer_r, start_angle, end_angle, CYAN)
+                
+              pygame.display.flip()
+              
+              for event in pygame.event.get():
                         if event.type == pygame.QUIT:
                                 running = False 
+
                         if event.type == pygame.MOUSEBUTTONDOWN:
                                 mouse_pos = pygame.mouse.get_pos()
                                 print(mouse_pos)
+                                #turning point click into radius and angle
+                                mx, my = pygame.mouse.get_pos()
+                                dx = mx - CENTER[0]
+                                dy = CENTER[1] - my
+                                r = math.sqrt(dx*dx + dy*dy)
+                                angle = math.degrees(math.atan2(dy, dx))
+                                if angle < 0:
+                                       angle += 360
+                                print("r:", r, "angle:", angle)
+                                
+                                ring_index = get_ring(r, radii)
+                                slice_index = get_slice(angle, slices)
+                                
+                                if ring_index is not None:
+                                        filled[ring_index][slice_index] = True
+                                        print(f"Clicked ring {ring_index}, slice {slice_index}")
+
+                                
 
         #Z_1s = 8.3
          #       Z_2s = 4.8
@@ -120,7 +180,7 @@ def main():
                        # return 1/8 * r**2 * (Z_2s/a0)**3 * (2-Z_2s/a0)**2 * math.e**(-Z_2s/a0)
                 
                 #def P_2p(r, Z_2p):
-                     #   return Z_2p**2/24*a0**5 * math.e**(-Z_2p/a0)
+                     #   return r**4 * Z_2p**5/24*a0**5 * math.e**(-Z_2p/a0)
 
 
         

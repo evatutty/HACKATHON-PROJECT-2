@@ -1,0 +1,158 @@
+import sys
+import pygame
+import math
+
+pygame.init()
+
+# ---------------------------
+# Pygame setup
+# ---------------------------
+screen = pygame.display.set_mode((800, 800))
+pygame.display.set_caption("Neon Minesweeper")
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED   = (255, 0, 0)
+GREEN = (0, 255, 0)
+CYAN  = (0, 255, 255)  # fill color
+CENTER = (400, 400)
+
+# ---------------------------
+# Helper functions
+# ---------------------------
+def outerX(angle, r):
+    return CENTER[0] + r * math.cos(angle)
+
+def outerY(angle, r):
+    return CENTER[1] - r * math.sin(angle)
+
+def innerX(angle, r):
+    return CENTER[0] + r * math.cos(angle)
+
+def innerY(angle, r):
+    return CENTER[1] - r * math.sin(angle)
+
+def get_ring(r, radii):
+    """Return the index of the ring in which radius r falls"""
+    for i in range(len(radii) - 1):
+        if radii[i] < r <= radii[i + 1]:
+            return i
+    return None
+
+def get_slice(angle, slices):
+    """Return the index of the angular slice in which angle falls"""
+    slice_width = 360 / slices
+    return int(angle // slice_width)
+
+def draw_filled_slice(screen, center, inner_radius, outer_radius, start_angle_deg, end_angle_deg, color, num_points=20):
+    start_rad = math.radians(start_angle_deg)
+    end_rad = math.radians(end_angle_deg)
+
+    outer_points = []
+    for i in range(num_points + 1):
+        angle = start_rad + i * (end_rad - start_rad) / num_points
+        x = center[0] + outer_radius * math.cos(angle)
+        y = center[1] - outer_radius * math.sin(angle)
+        outer_points.append((x, y))
+
+    inner_points = []
+    for i in range(num_points + 1):
+        angle = end_rad - i * (end_rad - start_rad) / num_points
+        x = center[0] + inner_radius * math.cos(angle)
+        y = center[1] - inner_radius * math.sin(angle)
+        inner_points.append((x, y))
+
+    points = outer_points + inner_points
+    pygame.draw.polygon(screen, color, points)
+
+# ---------------------------
+# Main
+# ---------------------------
+def main():
+    # Load nucleus image
+    image_nucleus = pygame.image.load("nucleus.png")
+    image_nucleus = pygame.transform.scale(image_nucleus, (800, 800))
+
+    # Define rings and slices
+    radii = [0, 75, 112.5, 150, 187.5, 225, 300]  # edges of rings
+    slices = 12
+    filled = [[False for _ in range(slices)] for _ in range(len(radii) - 1)]
+
+    running = True
+    while running:
+        screen.fill(WHITE)
+        screen.blit(image_nucleus, (-27.5, -20))
+
+        # Draw circles
+        pygame.draw.circle(screen, RED, CENTER, 75, 3)
+        pygame.draw.circle(screen, RED, CENTER, 112.5, 3)
+        pygame.draw.circle(screen, RED, CENTER, 150, 3)
+        pygame.draw.circle(screen, GREEN, CENTER, 187.5, 3)
+        pygame.draw.circle(screen, GREEN, CENTER, 225, 3)
+        pygame.draw.circle(screen, BLACK, CENTER, 300, 3)
+
+        # Draw red orbital lines
+        pygame.draw.line(screen, RED, (400, 325), (400, 250), 3)
+        pygame.draw.line(screen, RED, (529.9, 325), (464.95, 362.5), 3)
+        pygame.draw.line(screen, RED, (475, 270.1), (437.5, 335.05), 3)
+        pygame.draw.line(screen, RED, (400, 475), (400, 550), 3)
+        pygame.draw.line(screen, RED, (325, 270.1), (362.5, 335.05), 3)
+        pygame.draw.line(screen, RED, (270.1, 325), (335.05, 362.5), 3)
+        pygame.draw.line(screen, RED, (475, 400), (550, 400), 3)
+        pygame.draw.line(screen, RED, (270.1, 475), (335.05, 437.5), 3)
+        pygame.draw.line(screen, RED, (325, 529.9), (362.5, 464.95), 3)
+        pygame.draw.line(screen, RED, (475, 529.9), (437.5, 464.95), 3)
+        pygame.draw.line(screen, RED, (529.9, 475), (464.95, 437.5), 3)
+        pygame.draw.line(screen, RED, (325, 400), (250, 400), 3)
+
+        # Draw green orbital lines
+        angle = 0
+        Iradius = 150
+        Oradius = 225
+        for x in range(12):
+            rad = math.radians(angle)
+            pygame.draw.line(screen, GREEN, (outerX(rad, Oradius), outerY(rad, Oradius)), (innerX(rad, Iradius), innerY(rad, Iradius)), 3)
+            angle += 30
+
+        # Draw filled regions
+        slice_width = 360 / slices
+        for ring_i in range(len(radii) - 1):
+            for slice_i in range(slices):
+                if filled[ring_i][slice_i]:
+                    start_angle = slice_i * slice_width
+                    end_angle = start_angle + slice_width
+                    inner_r = radii[ring_i]
+                    outer_r = radii[ring_i + 1]
+                    draw_filled_slice(screen, CENTER, inner_r, outer_r, start_angle, end_angle, CYAN)
+
+        pygame.display.flip()
+
+        # ---------------------------
+        # Event handling
+        # ---------------------------
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mx, my = pygame.mouse.get_pos()
+                dx = mx - CENTER[0]
+                dy = CENTER[1] - my  # note: Y axis inverted
+                r = math.sqrt(dx * dx + dy * dy)
+                angle = math.degrees(math.atan2(dy, dx))
+                if angle < 0:
+                    angle += 360
+
+                ring_index = get_ring(r, radii)
+                slice_index = get_slice(angle, slices)
+
+                if ring_index is not None:
+                    filled[ring_index][slice_index] = True
+                    print(f"Clicked ring {ring_index}, slice {slice_index}")
+
+    pygame.quit()
+    sys.exit()
+
+
+if __name__ == "__main__":
+    main()

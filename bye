@@ -1,0 +1,172 @@
+import numpy as np
+import sys
+import pygame
+import math
+import random
+
+pygame.init()
+
+# Screen setup
+screen = pygame.display.set_mode((800, 800))
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+GREEN = (0, 255, 0)
+CYAN = (0, 255, 255)
+CENTER = (400, 400)
+pygame.display.set_caption("Neon Minesweeper")
+
+# Trig functions for grid
+def outerX(angle, r):
+    return CENTER[0] + r * math.cos(angle)
+def outerY(angle, r):
+    return CENTER[1] - r * math.sin(angle)
+def innerX(angle, r):
+    return CENTER[0] + r * math.cos(angle)
+def innerY(angle, r):
+    return CENTER[1] - r * math.sin(angle)
+
+# Helpers for region selection
+def get_ring(r, radii):
+    for i in range(len(radii)-1):
+        if radii[i] < r <= radii[i+1]:
+            return i
+    return None
+
+def get_slice(angle, slices):
+    slice_width = 360 / slices
+    return int(angle // slice_width)
+
+def draw_filled_slice(screen, center, inner_radius, outer_radius, start_angle_deg, end_angle_deg, color, num_points=30):
+    start_rad = math.radians(start_angle_deg)
+    end_rad = math.radians(end_angle_deg)
+    outer_points = [(center[0] + outer_radius * math.cos(start_rad + i*(end_rad-start_rad)/num_points),
+                     center[1] - outer_radius * math.sin(start_rad + i*(end_rad-start_rad)/num_points)) for i in range(num_points+1)]
+    inner_points = [(center[0] + inner_radius * math.cos(end_rad - i*(end_rad-start_rad)/num_points),
+                     center[1] - inner_radius * math.sin(end_rad - i*(end_rad-start_rad)/num_points)) for i in range(num_points+1)]
+    pygame.draw.polygon(screen, color, outer_points + inner_points)
+
+# --- Electron probability functions ---
+Z_1s = 8.3
+Z_2s = 4.8
+Z_2p = 4.8
+a0 = 100  # Adjusted scale for pixels
+
+def P_1s(r):
+    return 4 * r**2 * (Z_1s/a0)**3 * math.exp(-2*Z_1s*r/a0)
+def P_2s(r):
+    return (1/8) * r**2 * (Z_2s/a0)**3 * (2 - Z_2s*r/a0)**2 * math.exp(-Z_2s*r/a0)
+def P_2p(r):
+    return (r**4) * Z_2p**5 / (24 * a0**5) * math.exp(-Z_2p*r/a0)
+
+def main():
+    # Load image
+    image_nucleus = pygame.image.load("nucleus.png")
+    image_nucleus = pygame.transform.scale(image_nucleus, (800,800))
+
+    # Define radii and slices
+    radii = [0, 75, 112.5, 150, 187.5, 225, 300]
+    slices = 12
+    filled = [[False for _ in range(slices)] for _ in range(len(radii)-1)]
+
+    # --- Electron placement ---
+    tile_probs = []
+    for ring_index in range(len(radii)-1):
+        inner_r = radii[ring_index]
+        outer_r = radii[ring_index+1]
+        r_tile = (inner_r + outer_r) / 2
+        for slice_index in range(slices):
+            if ring_index <= 1:
+                p = P_1s(r_tile)
+            elif ring_index == 2:
+                p = P_2s(r_tile)
+            else:
+                p = P_2p(r_tile)
+            tile_probs.append(((ring_index, slice_index), p))
+
+    # Normalize
+    total_p = sum(p for (_, p) in tile_probs)
+    weights = [p/total_p for (_, p) in tile_probs]
+
+    # Pick 10 electrons
+    electron_tiles = set()
+    while len(electron_tiles) < 10:
+        chosen = random.choices(tile_probs, weights=weights, k=1)[0][0]
+        electron_tiles.add(chosen)
+
+    running = True
+    while running:
+        screen.fill(WHITE)
+        screen.blit(image_nucleus, (-27.5,-20))
+
+        # Draw circles
+        pygame.draw.circle(screen, RED, CENTER, 75, 3)
+        pygame.draw.circle(screen, RED, CENTER, 112.5, 3)
+        pygame.draw.circle(screen, RED, CENTER, 150, 3)
+        pygame.draw.circle(screen, GREEN, CENTER, 187.5, 3)
+        pygame.draw.circle(screen, GREEN, CENTER, 225, 3)
+        pygame.draw.circle(screen, BLACK, CENTER, 300, 3)
+
+        # Draw grid lines (orbital 1)
+        red_lines = [
+            ((400,325),(400,250)), ((529.9,325),(464.95,362.5)), ((475,270.096),(437.5,335.048)),
+            ((400,475),(400,550)), ((325,270.096),(362.5,335.048)), ((270.096,325),(335.048,362.5)),
+            ((475,400),(550,400)), ((270.096,475),(335.048,437.5)), ((325,529.903),(362.5,464.95)),
+            ((475,529.903),(437.5,464.95)), ((529.903,475),(464.95,437.5)), ((325,400),(250,400))
+        ]
+        for line in red_lines:
+            pygame.draw.line(screen, RED, line[0], line[1], 3)
+
+        # Draw orbital 2 lines (green)
+        angle = 0
+        Iradius = 150
+        Oradius = 225
+        for _ in range(12):
+            rad = math.radians(angle)
+            pygame.draw.line(screen, GREEN, (outerX(rad, Oradius), outerY(rad, Oradius)),
+                             (innerX(rad, Iradius), innerY(rad, Iradius)), 3)
+            angle += 30
+
+        # Draw filled regions
+        slice_width = 360 / slices
+        for ring_i in range(len(radii)-1):
+            for slice_i in range(slices):
+                if filled[ring_i][slice_i]:
+                    start_angle = slice_i * slice_width
+                    end_angle = start_angle + slice_width
+                    inner_r = radii[ring_i]
+                    outer_r = radii[ring_i + 1]
+                    draw_filled_slice(screen, CENTER, inner_r, outer_r, start_angle, end_angle, CYAN)
+
+        pygame.display.flip()
+
+        # --- Event handling ---
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mx, my = pygame.mouse.get_pos()
+                dx = mx - CENTER[0]
+                dy = CENTER[1] - my
+                r = math.sqrt(dx*dx + dy*dy)
+                angle = math.degrees(math.atan2(dy, dx))
+                if angle < 0:
+                    angle += 360
+
+                ring_index = get_ring(r, radii)
+                slice_index = get_slice(angle, slices)
+
+                if ring_index is not None:
+                    # Check if clicked an electron
+                    if (ring_index, slice_index) in electron_tiles:
+                        print("Electron found! Game over!")
+                        running = False
+                    else:
+                        filled[ring_index][slice_index] = True
+
+    pygame.quit()
+    sys.exit()
+
+if __name__ == "__main__":
+    main()
